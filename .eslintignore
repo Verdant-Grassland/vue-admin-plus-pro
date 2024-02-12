@@ -1,0 +1,15 @@
+/build/
+/config/
+/dist/
+/*.js
+/test/unit/coverage/
+/node_modules/*
+/dist*
+/src/main.ts
+*.d.ts
+.prettierrc.js
+commitlint.config.js
+postcss.config.js
+tailwind.config.ts
+stylelint.config.js
+eslint.config.js
