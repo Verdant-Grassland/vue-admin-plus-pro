@@ -1,0 +1,49 @@
+<script setup lang="ts">
+  import { ref } from 'vue'
+  import VueForm from '@lljj/vue3-form-element'
+
+  const loginFormData = ref({})
+  const loginFormSchema = ref({
+    type: "object",
+    // required: ["adminName", "password"],
+    properties: {
+      adminName: {
+        title: "管理员名",
+        type: "string",
+        "ui:options": {
+          placeholder: "请输入管理员名",
+          clearable: true
+        },
+        "err:options": {
+          required: "请输入管理员名"
+        }
+      },
+      password: {
+        title: "密码",
+        type: "string",
+        "ui:options": {
+          placeholder: "请输入密码",
+          showPassword: true
+        },
+        "err:options": {
+          required: "请输入密码"
+        }
+      }
+    },
+    "ui:order": ["adminName", "password"]
+  })
+</script>
+
+<template>
+  <VueForm v-model:formData="loginFormData" v-model:modelValue="loginFormData" :schema="loginFormSchema">
+    <!-- <template #footer>自定义表单底部</template> -->
+    <!-- <template #submit>自定义提交按钮</template> -->
+    <!-- <template #reset>自定义重置按钮</template> -->
+    <!-- <template #error>自定义错误提示</template> -->
+    
+  </VueForm>
+</template>
+
+<style lang="scss" scoped>
+  
+</style>

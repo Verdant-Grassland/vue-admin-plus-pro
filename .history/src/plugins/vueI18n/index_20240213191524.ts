@@ -1,0 +1,1 @@
+// 我安装了vue的i18n和yaml-loader
