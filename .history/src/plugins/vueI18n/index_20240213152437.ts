@@ -1,1 +1,0 @@
-import { type I18n } from "vue-i18n"; }
