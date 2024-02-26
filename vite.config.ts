@@ -12,6 +12,8 @@ import PurgeIcons from 'vite-plugin-purge-icons'
 import { ViteEjsPlugin } from 'vite-plugin-ejs'
 import UnoCSS from 'unocss/vite'
 import { visualizer } from 'rollup-plugin-visualizer'
+import SvgLoader from 'vite-svg-loader'
+import { viteMockServe } from 'vite-plugin-mock'
 
 // https://vitejs.dev/config/
 const root = process.cwd()
@@ -66,7 +68,24 @@ export default ({
       ViteEjsPlugin({
         title: env.VITE_APP_TITLE
       }),
-      UnoCSS()
+      SvgLoader(),
+      UnoCSS(),
+      env.VITE_USE_MOCK === 'true'
+        ? viteMockServe({
+            ignore: /^\_/,
+            mockPath: 'mock',
+            localEnabled: !isBuild,
+            prodEnabled: isBuild,
+            injectCode: `
+          import { setupProdMockServer } from '../mock/_createProductionServer'
+
+          setupProdMockServer()
+          `
+          })
+        : undefined,
+      ViteEjsPlugin({
+        title: env.VITE_APP_TITLE
+      })
     ],
     css: {
       preprocessorOptions: {

@@ -1,0 +1,34 @@
+@use './mixins' as *;
+
+.sub-nav {
+  @include with-border;
+  @include with-bg;
+
+  @include respond-to('lg') {
+    display: none !important;
+  }
+
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: var(--sub-nav-z-index);
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 32px;
+  overflow: hidden;
+
+  @media (width <= 767px) {
+    padding: 0 24px;
+  }
+
+  .go-back-top {
+    opacity: 0;
+    transform: translateY(100%);
+
+    &.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

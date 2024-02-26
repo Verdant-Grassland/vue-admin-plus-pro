@@ -1,3 +1,9 @@
+common:
+  loginOutMessage: Exit the system?
+  remember: Remember Me
+  back: Back
+  ok: OK
+  cancel: Cancel
 buttons:
   hsLoginOut: LoginOut
   hsfullscreen: FullScreen
@@ -127,7 +133,7 @@ menus:
 status:
   hsLoad: Loading...
 login:
-  adminName: Administrator Name
+  adminName: adminName
   adminEmail: Email
   adminPhone: Phone Number
   password: Password

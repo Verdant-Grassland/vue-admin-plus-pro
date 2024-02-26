@@ -1,11 +1,11 @@
 import service from './service'
 import { CONTENT_TYPE } from '@/constants'
-import { useUserStoreWithOut } from '@/store/modules/user'
+import { useAdminStoreWithOut } from '@/store/modules/admin'
 
 const request = (option: AxiosConfig) => {
   const { url, method, params, data, headers, responseType } = option
 
-  const userStore = useUserStoreWithOut()
+  const userStore = useAdminStoreWithOut()
   return service.request({
     url: url,
     method,

@@ -35,13 +35,16 @@
       "element-plus/global",
       "@types/qrcode",
       "vite-plugin-svg-icons/client"
-    ]
+    ],
   },
   "extends": "@tsconfig/node20/tsconfig.json",
   "include": [
     "vite.config.*",
-    "src/**/*",
+    "src/**/*.js",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     "src/**/*.vue",
-    "types/*.ts"
+    "types/*.ts",
+    "mock/**/*.ts"
   ]
 }

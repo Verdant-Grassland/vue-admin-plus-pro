@@ -1,3 +1,4 @@
+import NProgress from '@/hooks/web/useProgress'
 import type {
   InternalAxiosRequestConfig,
   AxiosResponse,
@@ -16,6 +17,25 @@ interface RequestInterceptors<T> {
   responseInterceptorsCatch?: (err: any) => any
 }
 
+const requestInterceptors: RequestInterceptors<AxiosResponse> = {
+  requestInterceptors: (config: InternalAxiosRequestConfig) => {
+    NProgress.start()
+    return config
+  },
+  requestInterceptorsCatch: (err: any) => {
+    NProgress.done()
+    return Promise.reject(err)
+  },
+  responseInterceptors: (res: AxiosResponse) => {
+    NProgress.done()
+    return res
+  },
+  responseInterceptorsCatch: (err: any) => {
+    NProgress.done()
+    return Promise.reject(err)
+  }
+}
+
 interface RequestConfig<T = AxiosResponse> extends AxiosRequestConfig {
   interceptors?: RequestInterceptors<T>
 }
@@ -27,5 +47,6 @@ export {
   AxiosInstance,
   InternalAxiosRequestConfig,
   AxiosRequestHeaders,
-  AxiosError
+  AxiosError,
+  requestInterceptors
 }

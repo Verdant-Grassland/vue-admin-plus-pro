@@ -1,20 +1,54 @@
-import type { ECharts } from "echarts";
-import type { TableColumns } from "@pureadmin/table";
+import type { ECharts } from "echarts"
+import type { TableColumns } from "@pureadmin/table"
 import { App } from 'vue'
-import { Effect } from "@pureadmin/table";
-import { Recordable } from "@pureadmin/utils";
+import { Effect } from "@pureadmin/table"
+import { Recordable } from "@pureadmin/utils"
+import { RawAxiosRequestHeaders } from 'axios'
 
-declare type LocaleType = 'zh-CN' | 'en'
-declare type TimeoutHandle = ReturnType<typeof setTimeout>
-declare type IntervalHandle = ReturnType<typeof setInterval>
-declare type ElementPlusInfoType = 'success' | 'info' | 'warning' | 'danger'
-declare type LayoutType = 'classic' | 'topLeft' | 'top' | 'cutMenu'
-declare type AxiosMethod = 'get' | 'post' | 'delete' | 'put'
-declare type AxiosResponseType = 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream'
 /**
  * 全局类型声明，无需引入直接在 `.vue` 、`.ts` 、`.tsx` 文件使用即可获得类型提示
  */
 declare global {
+  declare type LocaleType = 'zh-CN' | 'en'
+  declare type TimeoutHandle = ReturnType<typeof setTimeout>
+  declare type IntervalHandle = ReturnType<typeof setInterval>
+  declare type ElementPlusInfoType = 'success' | 'info' | 'warning' | 'danger'
+  declare type LayoutType = 'classic' | 'topLeft' | 'top' | 'cutMenu'
+  declare type AxiosMethod = 'get' | 'post' | 'delete' | 'put'
+  declare type AxiosResponseType = 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream'
+  declare type AxiosContentType =
+    | 'application/json'
+    | 'application/x-www-form-urlencoded'
+    | 'multipart/form-data'
+    | 'text/plain'
+  declare interface AxiosConfig {
+    params?: any
+    data?: any
+    url?: string
+    method?: AxiosMethod
+    headers?: RawAxiosRequestHeaders
+    responseType?: AxiosResponseType
+  }
+
+  declare interface IResponse<T = any> {
+    [x: string]: MessageParamsWithType
+    code: number
+    data: T extends any ? T : T & any
+  }
+
+  declare interface Fn<T = any> {
+    (...arg: T[]): T
+  }
+
+  declare type Nullable<T> = T | null
+
+  declare type ElRef<T extends HTMLElement = HTMLDivElement> = Nullable<T>
+
+  declare type Recordable<T = any, K = string> = Record<K extends null | undefined ? string : K, T>
+
+  declare type RemoveReadonly<T> = {
+    -readonly [P in keyof T]: T[P]
+  }
   /**
    * 平台的名称、版本、运行所需的`node`和`pnpm`版本、依赖、最后构建时间的类型提示
    */

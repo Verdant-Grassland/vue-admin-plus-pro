@@ -1,8 +1,8 @@
 import type { AxiosResponse, InternalAxiosRequestConfig } from './types'
 import { ElMessage } from 'element-plus'
 import qs from 'qs'
-import { SUCCESS_CODE, TRANSFORM_REQUEST_DATA } from '@/constants'
-import { useUserStoreHook } from '@/store/modules/user'
+import { ResultCode, TRANSFORM_REQUEST_DATA } from '@/constants'
+import { useAdminStoreWithOut } from '@/store/modules/admin'
 import { objToFormData } from '@/utils'
 
 const defaultRequestInterceptors = (config: InternalAxiosRequestConfig) => {
@@ -38,12 +38,12 @@ const defaultResponseInterceptors = (response: AxiosResponse) => {
   if (response?.config?.responseType === 'blob') {
     // 如果是文件流，直接过
     return response
-  } else if (response.data.code === SUCCESS_CODE) {
+  } else if (response.data.code === ResultCode.OK) {
     return response.data
   } else {
     ElMessage.error(response?.data?.message)
-    if (response?.data?.code === 401) {
-      const userStore = useUserStoreHook()
+    if (response?.data?.code === ResultCode.ERROR) {
+      const userStore = useAdminStoreWithOut()
       userStore.logout()
     }
   }

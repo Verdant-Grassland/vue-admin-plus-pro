@@ -1,0 +1,141 @@
+/* https://github.com/antfu/prism-theme-vars */
+@use 'prism-theme-vars/base.css';
+@use 'prism-theme-vars/marker.css';
+
+[class*='language-']::before {
+  font-family: var(--code-font-family);
+}
+
+span[class~='language-css']::before {
+  content: '';
+}
+
+:root {
+  --prism-marker-opacity: 0.6;
+  --prism-marker-color: var(--code-text-color);
+  --prism-line-height: var(--code-line-height);
+}
+
+html:not(.dark) {
+  --prism-builtin: #3182bd;
+  --prism-comment: #848486;
+  --prism-deleted: #3182bd;
+  --prism-function: #6196cc;
+  --prism-boolean: #c25205;
+  --prism-number: #c25205;
+  --prism-property: #717c11;
+  --prism-punctuation: #a8a9cc;
+  --prism-keyword: #c792ea;
+  --prism-variable: #0b8235;
+  --prism-url-decoration: #67cdcc;
+  --prism-symbol: green;
+  --prism-selector: #0b8235;
+}
+
+html.dark {
+  --prism-scheme: dark;
+  --prism-foreground: #a6accd;
+  --prism-background: #181818;
+  --prism-comment: #758575;
+  --prism-string: #c3e88d;
+  --prism-literal: #429988;
+  --prism-keyword: #89ddff;
+  --prism-boolean: #6394bf;
+  --prism-number: #6394bf;
+  --prism-variable: #c2b36e;
+  --prism-function: #82aaff;
+  --prism-deleted: #bc6066;
+  --prism-class: #54b1bf;
+  --prism-builtin: var(--el-color-primary-light-3);
+  --prism-property: #c792ea;
+  --prism-namespace: #db889a;
+  --prism-punctuation: #89ddff;
+  --prism-decorator: #bd8f8f;
+  --prism-regex: #ab5e3f;
+  --prism-json-property: #6b8b9e;
+  --prism-line-number: #888;
+  --prism-line-number-gutter: #eee;
+  --prism-line-highlight-background: #444;
+  --prism-selection-background: #444;
+  --prism-inline-background: #2d2d2d;
+}
+
+code {
+  padding: 0.15rem 0.5rem;
+  margin: 0;
+  font-family: var(--code-font-family);
+  font-size: var(--code-font-size);
+  line-height: var(--code-line-height);
+  color: var(--code-text-color);
+  background-color: var(--code-bg-color);
+  border-radius: 4px;
+}
+
+pre {
+  code {
+    background-color: transparent;
+  }
+}
+
+a > code {
+  color: var(--code-link-color);
+}
+
+code .token.deleted {
+  color: #ec5975;
+}
+
+code .token.inserted {
+  color: var(--c-brand);
+}
+
+div[class*='language-'] {
+  position: relative;
+  margin: 1rem -1.5rem;
+  overflow-x: auto;
+  background-color: var(--code-bg-color);
+}
+
+li > div[class*='language-'] {
+  margin: 1rem -1.5rem 1rem -1.25rem;
+  border-radius: 6px 0 0 6px;
+}
+
+@media (width >= 420px) {
+  div[class*='language-'] {
+    margin: 1rem 0;
+    border-radius: 6px;
+  }
+
+  li > div[class*='language-'] {
+    margin: 1rem 0;
+    border-radius: 6px;
+  }
+}
+
+[class*='language-'] pre,
+[class*='language-'] code {
+  hyphens: none;
+  text-align: left;
+  word-break: normal;
+  word-wrap: normal;
+  tab-size: 4;
+  white-space: pre;
+  word-spacing: normal;
+}
+
+[class*='language-'] pre {
+  position: relative;
+  z-index: 1;
+  padding: 0.25rem;
+  margin: 0;
+  overflow-x: auto;
+  background: transparent;
+}
+
+[class*='language-'] code {
+  padding: 0;
+  font-size: var(--code-font-size);
+  line-height: var(--code-line-height);
+  color: var(--code-text-color);
+}

@@ -1,75 +1,27 @@
-<script setup lang="ts">
+<script lang="ts">
+import { defineComponent } from 'vue'
+import { ElConfigProvider } from 'element-plus'
+import en from 'element-plus/dist/locale/en.mjs'
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+import { useLocaleStore } from '@/store/useLocaleStore'
 
+export default defineComponent({
+  name: 'app',
+  components: {
+    [ElConfigProvider.name as string]: ElConfigProvider
+  },
+  setup() {
+    const store = useLocaleStore()
+    const currentLocale = store.locale === 'zhCn' ? zhCn : en
+    return {
+      currentLocale
+    }
+  }
+})
 </script>
 
 <template>
-  <header>
-    
-  </header>
-
-  <RouterView />
+  <el-config-provider :locale="currentLocale">
+    <RouterView />
+  </el-config-provider>
 </template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
-</style>

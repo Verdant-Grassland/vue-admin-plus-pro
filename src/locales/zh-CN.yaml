@@ -1,3 +1,9 @@
+common:
+  loginOutMessage: 是否退出本系统？
+  remember: 记住我
+  back: 返回
+  ok: 确定
+  cancel: 取消
 buttons:
   hsLoginOut: 退出系统
   hsfullscreen: 全屏
