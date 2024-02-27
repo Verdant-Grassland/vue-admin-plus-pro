@@ -3,18 +3,8 @@ import type {  RouteRecordRaw } from 'vue-router'
 import type { App } from 'vue'
 import NProgress from '@/hooks/web/useProgress'
 import { NO_RESET_WHITE_LIST } from '@/constants'
-import { getParentPaths } from '@/router/utils'
-import account from './modules/account'
 
 export const constantRouterMap: AppRouteRecordRaw[] = []
-
-
-const router = createRouter({
-  history: createWebHistory(),
-  strict: true,
-  routes: constantRouterMap as RouteRecordRaw[],
-  scrollBehavior: () => ({ left: 0, top: 0 })
-})
 
 export const resetRouter = (): void => {
   router.getRoutes().forEach((route) => {
@@ -30,14 +20,21 @@ export const resetRouter = (): void => {
  * 如何排除文件请看：https://cn.vitejs.dev/guide/features.html#negative-patterns
  */
 const modules: Record<string, any> = import.meta.glob(
-  ["./modules/**/*.ts"],
+  ["./modules/*.ts"],
   {
     eager: true
   }
-);
+)
 
 Object.keys(modules).forEach((key) => {
   constantRouterMap.push(...modules[key].default)
+})
+
+const router = createRouter({
+  history: createWebHistory(),
+  strict: true,
+  routes: constantRouterMap as RouteRecordRaw[],
+  scrollBehavior: () => ({ left: 0, top: 0 })
 })
 
 router.beforeEach((_to, _from, next) => {
