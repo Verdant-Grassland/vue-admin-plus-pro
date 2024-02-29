@@ -1,4 +1,10 @@
 import { R } from '@/constants'
+import Mock from 'mockjs'
+import { Md5 } from 'ts-md5'
+import { AdminReview, AccountStatus } from './status'
+import { utils } from './utils'
+import { Role } from '@/api/role/types'
+import { Dept } from '@/api/dept/types'
 const timeout = 1000
 
 const admin: {
@@ -7,14 +13,15 @@ const admin: {
   adminRename: string
   adminSex: number
   password: string
+  adminSalt: string
   adminRole: number
   adminDept: number
   adminAvatar: string
   adminPhone: string
   adminEmail: string
   adminBio: string
-  adminReview: string | null
-  adminStatus: string
+  adminReview: number
+  adminStatus: number
   starStatusTime: string | null
   endStatusTime: string | null
   createTime: string
@@ -23,77 +30,54 @@ const admin: {
   adminIsdelete: number
   roleList: Role[]
   menuPerms: any
-  deptList: Department[]
+  deptList: Dept[]
 }[] = [
   {
     adminId: 1,
     adminName: "admin",
     adminRename: "张某某",
-    adminSex: 2,
+    adminSex: Mock.Random.integer(1, 2),
     adminRole: 1,
     adminDept: 1,
     adminAvatar: "string",
-    adminPhone: "13614294645",
+    adminPhone: "13888888888",
     adminEmail: "admin@mail.com",
     adminBio: "string",
-    adminStatus: "NORMAL",
-    createTime: "2024-01-13T04:04:28.000+00:00",
-    updateTime: "2024-01-13T04:04:28.000+00:00",
-    adminIsdelete: 0,
-    password: "123456",
-    adminReview: null,
+    adminStatus: 0,
+    createTime: "@datetime",
+    updateTime: "@datetime",
+    adminIsdelete: Mock.Random.integer(0, 1),
+    password: "f4fa310241d3e894ca3d47bda9c2fd9f",
+    adminSalt: "24F1D1599D538624",
+    adminReview: 0,
     starStatusTime: null,
     endStatusTime: null,
     adminRemark: null,
     roleList: [{
       roleId: 1,
       roleName: "超级管理员",
-      roleStatus: 0,
+      roleStatus: Mock.Random.integer(0, 1),
       roleDescription: "超级管理员无限所有的菜单",
-      createTime: "2024-01-13T04:04:28.000+00:00",
-      updateTime: "2024-01-13T04:04:28.000+00:00",
-      roleIsdelete: 0
+      createTime: "@datetime",
+      updateTime: "@datetime",
+      roleIsdelete: Mock.Random.integer(0, 1)
     }],
     menuPerms: undefined,
     deptList: [{
       deptId: 1,
       parentId: 0,
-      deptName: "沈阳市智绘蓝图文化科技有限公司",
+      deptName: "北京市某某科技有限公司",
       orderNum: 0,
-      deptLeader: "张灵琳",
-      deptPhone: "15142956141",
-      deptEmail: "zhihuilantu2023@163.com",
-      deptStatus: 0,
-      createTime: "2024-01-13T04:04:28.000+00:00",
-      updateTime: "2024-01-13T04:04:28.000+00:00",
-      deptIsdelete: 0
+      deptLeader: "张田某",
+      deptPhone: "13888888888",
+      deptEmail: "admin2023@163.com",
+      deptStatus: Mock.Random.integer(0, 1),
+      createTime: "@datetime",
+      updateTime: "@datetime",
+      deptIsdelete: Mock.Random.integer(0, 1)
     }]
   }
 ]
-
-interface Role {
-  roleId: number
-  roleName: string
-  roleStatus: number
-  roleDescription: string
-  createTime: string
-  updateTime: string
-  roleIsdelete: number
-}
-
-interface Department {
-  deptId: number
-  parentId: number
-  deptName: string
-  orderNum: number
-  deptLeader: string
-  deptPhone: string
-  deptEmail: string
-  deptStatus: number
-  createTime: string
-  updateTime: string
-  deptIsdelete: number
-}
 
 export default [
   {
@@ -103,11 +87,62 @@ export default [
       const { account, password } = req.body
       // 根据用户名、手机号或邮箱进行登录验证
       const matchedAdmin = admin.find((a) => a.adminName == account || a.adminPhone == account || a.adminEmail == account);
-
-      if (matchedAdmin && matchedAdmin.password == password) {
-        return R.ok("超级管理员登录成功").setData("adminList", matchedAdmin)
+      let token
+      if (matchedAdmin && matchedAdmin.password == Md5.hashStr(password + matchedAdmin.adminSalt)) {
+        if (matchedAdmin.adminId == 1) {
+          token = "eyJhbGciOiJIUzUxMiJ9.admin"
+          return R.ok("超级管理员登录成功").setData("admin", matchedAdmin).setData("token", token)
+        } else {
+          // return R.error("超级管理员登录失败")
+          const statusMap: Map<number, string> = new Map()
+          statusMap.set(AdminReview.APPROVED.statusCode, "管理员登录成功")
+          statusMap.set(AdminReview.FAILED.statusCode, "管理员登录失败，请你联系超级管理员")
+          statusMap.set(AdminReview.CANCELED.statusCode, "管理员登录失败，你的账号未注册")
+          statusMap.set(AdminReview.FROZEN.statusCode, "你的账号已被永久冻结，请你联系超级管理员")
+          const statusMessage = statusMap.get(matchedAdmin?.adminReview as number)
+          if (statusMessage != null) {
+            if (matchedAdmin?.adminReview == AdminReview.APPROVED.statusCode) {
+              const matchedAdmin = admin.find((a) => a.adminName == account || a.adminPhone == account || a.adminEmail == account)
+              if (matchedAdmin) {
+                token = "eyJhbGciOiJIUzUxMiJ9.employee"
+                return R.ok(statusMessage).setData("admin", matchedAdmin).setData("token", token)
+              } else {
+                return R.error("管理员登录失败")
+              }
+            } else if (matchedAdmin?.adminReview == AdminReview.FAILED.statusCode || matchedAdmin?.adminReview == AdminReview.CANCELED.statusCode) {
+              return R.error(statusMessage).setData("admin", matchedAdmin)
+            } else if (matchedAdmin?.adminReview == AccountStatus.FROZEN.statusCode) {
+              if (matchedAdmin?.adminReview == AccountStatus.FROZEN.statusCode) {
+                return R.error(statusMessage).setData("admin", matchedAdmin)
+              } else {
+                // 计算冻结时间
+                const duration = matchedAdmin.endStatusTime.getTime() - matchedAdmin.starStatusTime.getTime()
+                const days = Math.floor(duration / (1000 * 60 * 60 * 24))
+                const hours = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+                const minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60))
+                const seconds = Math.floor((duration % (1000 * 60)) / 1000)
+                return R.error(`您的账号已被临时冻结，剩余时间 ${days} 天 ${hours} 小时 ${minutes} 分钟 ${seconds} 秒，会自动解冻`).setData("admin", admin)
+              }
+            } else {
+              return R.error("管理员登录失败")
+            }
+          }
+        }
       } else {
-        return R.error("超级管理员登录失败")
+        return R.error("您的账号或密码错误")
+      }
+      return R.error("管理员登录失败") 
+    }
+  },
+  {
+    url: '/admin/logout',
+    method: 'get',
+    timeout,
+    response: () => {
+      if (true) {
+        return R.ok("退出登录成功")
+      } else {
+        return R.error("退出登录失败")
       }
     }
   },
@@ -116,21 +151,76 @@ export default [
     method: "get",
     response: () => {
       if (admin) {
-        return R.ok("查询所有管理员成功").setData("adminList", admin)
+        return R.ok("查询所有管理员数据成功").setData("adminList", admin)
       } else {
-        return R.error("查询所有管理员失败")
+        return R.error("查询所有管理员数据失败")
       }
     }
   },
   {
-    url: '/admin/loginOut',
-    method: 'get',
-    timeout,
-    response: () => {
-      if (true) {
-        return R.ok("退出登录成功")
+    url: '/admin/register',
+    method: 'post',
+    response: (req: any) => {
+      const { password, confirmPassword, ...addAdmin } = req.body;
+      if (password !== confirmPassword) {
+        return R.error("两次输入的密码不一致");
+      }
+      const admins = admin[admin.length - 1]
+      const adminId = admins ? admins.adminId + 1 : 1
+      addAdmin.adminId = adminId
+      const passwords = Md5.hashStr(addAdmin.password)
+      const salt = utils.salt()
+      addAdmin.password = passwords
+      addAdmin.adminSalt = salt
+      addAdmin.createTime = new Date()
+      addAdmin.updateTime = new Date()
+      admin.push(addAdmin)
+      if (addAdmin) {
+        return R.ok("注册管理员成功")
       } else {
-        return R.error("退出登录失败")
+        return R.error("注册管理员失败")
+      }
+    }
+  },
+  {
+    url: '/admin/deleteAdmin/:adminId',
+    method: 'delete',
+    response: (req: any) => {
+      const { adminId } = req.query
+      const index = admin.findIndex(item => item.adminId === parseInt(adminId))
+      if (index) {
+        admin[index].adminIsdelete = 1;
+        return R.ok("注销管理员成功")
+      } else {
+        return R.error("注销管理员失败")
+      }
+    }
+  },
+  {
+    url: '/admin/getAdminById/:adminId',
+    method: 'get',
+    response: (req: any) => {
+      const { adminId } = req.query
+      const index = admin.find(item => item.adminId === parseInt(adminId))
+      if (index) {
+        return R.ok("按照管理员编号查询数据成功").setData("admin", index)
+      } else {
+        return R.error("未找到该管理员")
+      }
+    }
+  },
+  {
+    url: '/admin/updateAdmin',
+    method: 'put',
+    response: (req: any) => {
+      const updateAdmin = req.body
+      updateAdmin.updateTime = new Date()
+      const index = admin.findIndex(item => item.adminId === updateAdmin.adminId)
+      if (index) {
+        admin[index] = updateAdmin
+        return R.ok("修改管理员信息成功")
+      } else {
+        return R.error("修改管理员信息成功，未找到该管理员")
       }
     }
   }

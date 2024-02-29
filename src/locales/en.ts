@@ -170,7 +170,7 @@ export default {
     sticky: 'Sticky',
     treeTable: 'Tree table',
     PicturePreview: 'Table Image Preview',
-    department: 'Department management',
+    dept: 'Dept management',
     menuManagement: 'Menu management',
     // 权限测试页面
     permission: 'Permission test page',
@@ -519,19 +519,19 @@ export default {
     remarkMessage1: 'Back end control routing permission',
     remarkMessage2: 'Front end control routing permission',
     // 部门列表
-    departmentList: 'Department list',
+    deptList: 'Dept list',
     // 搜索部门
-    searchDepartment: 'Search department',
+    searchDept: 'Search dept',
     account: 'Account',
     email: 'Email',
     createTime: 'Create time',
     // 所属部门
-    department: 'Department',
-    departmentName: 'Department name',
+    dept: 'Dept',
+    deptName: 'Dept name',
     status: 'Status',
     enable: 'Enable',
     disable: 'Disable',
-    superiorDepartment: 'Superior department'
+    superiorDept: 'Superior dept'
   },
   menu: {
     menuName: 'Menu name',

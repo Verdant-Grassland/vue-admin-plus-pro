@@ -1,96 +1,96 @@
 <script setup lang="ts">
-import { nextTick, ref, toRaw, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import { bg, avatar, illustration } from '@/views/login/utils/static'
-import sun from '@/components/Icon/Sun.vue'
-import moon from '@/components/Icon/Moon.vue'
-import globalization from '@/assets/svg/globalization.svg?component'
-import { useDark, useToggle } from '@vueuse/core'
-import Motion from './utils/motion'
-import TypeIt from '@/components/Typeit'
-import LoginForm from './components/LoginForm.vue'
-import RegisterForm from './components/RegisterForm.vue'
+  import { nextTick, ref, toRaw, watch } from 'vue'
+  import { useRouter } from 'vue-router'
+  import { bg, avatar, illustration } from '@/views/login/utils/static'
+  import sun from '@/components/Icon/Sun.vue'
+  import moon from '@/components/Icon/Moon.vue'
+  import globalization from '@/assets/svg/globalization.svg?component'
+  import { useDark, useToggle } from '@vueuse/core'
+  import Motion from './utils/motion'
+  import TypeIt from '@/components/Typeit'
+  import LoginForm from './components/LoginForm.vue'
+  import RegisterForm from './components/RegisterForm.vue'
 
-const title = ref(import.meta.env.VITE_APP_TITLE)
-const router = useRouter()
+  const title = ref(import.meta.env.VITE_APP_TITLE)
+  const router = useRouter()
 
-const isDark = useDark({
-  storageKey: 'theme-appearance'
-})
-const toggleDark = useToggle(isDark)
-const darkMode = ref(isDark.value)
+  const isDark = useDark({
+    storageKey: 'theme-appearance'
+  })
+  const toggleDark = useToggle(isDark)
+  const darkMode = ref(isDark.value)
 
-watch(
-  () => darkMode.value,
-  () => {
-    toggleDark()
+  watch(
+    () => darkMode.value,
+    () => {
+      toggleDark()
+    }
+  )
+
+  let resolveFn: (value: boolean | PromiseLike<boolean>) => void
+  const switchTheme = (event: MouseEvent) => {
+    const isAppearanceTransition =
+      // @ts-expect-error
+      document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (!isAppearanceTransition || !event) {
+      resolveFn(true)
+      return
+    }
+    const x = event.clientX
+    const y = event.clientY
+    const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))
+    // @ts-expect-error: Transition API
+    const transition = document.startViewTransition(async () => {
+      resolveFn(true)
+      await nextTick()
+    })
+    transition.ready.then(() => {
+      const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`]
+      document.documentElement.animate(
+        {
+          clipPath: isDark.value ? [...clipPath].reverse() : clipPath
+        },
+        {
+          duration: 400,
+          easing: 'ease-in',
+          pseudoElement: isDark.value ? '::view-transition-old(root)' : '::view-transition-new(root)'
+        }
+      )
+    })
   }
-)
-
-let resolveFn: (value: boolean | PromiseLike<boolean>) => void
-const switchTheme = (event: MouseEvent) => {
-  const isAppearanceTransition =
-    // @ts-expect-error
-    document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (!isAppearanceTransition || !event) {
-    resolveFn(true)
-    return
+  const beforeChange = (): Promise<boolean> => {
+    return new Promise((resolve) => {
+      resolveFn = resolve
+    })
   }
-  const x = event.clientX
-  const y = event.clientY
-  const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))
-  // @ts-expect-error: Transition API
-  const transition = document.startViewTransition(async () => {
-    resolveFn(true)
-    await nextTick()
-  })
-  transition.ready.then(() => {
-    const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`]
-    document.documentElement.animate(
-      {
-        clipPath: isDark.value ? [...clipPath].reverse() : clipPath
-      },
-      {
-        duration: 400,
-        easing: 'ease-in',
-        pseudoElement: isDark.value ? '::view-transition-old(root)' : '::view-transition-new(root)'
-      }
-    )
-  })
-}
-const beforeChange = (): Promise<boolean> => {
-  return new Promise((resolve) => {
-    resolveFn = resolve
-  })
-}
 
-const getDropdownItemStyle = (locale: string, lang: string) => {
-  // 返回下拉菜单项的样式
-  // 可根据当前语言和传入的语言进行判断，返回对应的样式
-}
+  const getDropdownItemStyle = (locale: string, lang: string) => {
+    // 返回下拉菜单项的样式
+    // 可根据当前语言和传入的语言进行判断，返回对应的样式
+  }
 
-const getDropdownItemClass = (locale: string, lang: string) => {
-  // 返回下拉菜单项的类名
-  // 可根据当前语言和传入的语言进行判断，返回对应的类名
-}
+  const getDropdownItemClass = (locale: string, lang: string) => {
+    // 返回下拉菜单项的类名
+    // 可根据当前语言和传入的语言进行判断，返回对应的类名
+  }
 
-const translationCh = () => {
-  // 简体中文翻译逻辑
-}
+  const translationCh = () => {
+    // 简体中文翻译逻辑
+  }
 
-const translationEn = () => {
-  // 英文翻译逻辑
-}
+  const translationEn = () => {
+    // 英文翻译逻辑
+  }
 
-const isLogin = ref(true)
+  const isLogin = ref(true)
 
-const toRegister = () => {
-  isLogin.value = false
-}
+  const toRegister = () => {
+    isLogin.value = false
+  }
 
-const toLogin = () => {
-  isLogin.value = true
-}
+  const toLogin = () => {
+    isLogin.value = true
+  }
 </script>
 
 <template>
@@ -155,7 +155,7 @@ const toLogin = () => {
             <!-- <RegisterForm
               v-else
               class="p-20px h-auto m-auto lt-xl:rounded-3xl lt-xl:light:bg-white"
-              @to-register="toLogin" /> -->
+              @to-login="toLogin" /> -->
           </Motion>
         </div>
       </div>

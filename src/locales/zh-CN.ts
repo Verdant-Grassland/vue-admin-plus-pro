@@ -168,7 +168,7 @@ export default {
     sticky: '黏性',
     treeTable: '树形表格',
     PicturePreview: '表格图片预览',
-    department: '部门管理',
+    dept: '部门管理',
     menuManagement: '菜单管理',
     permission: '权限测试页',
     function: '功能',
@@ -509,21 +509,21 @@ export default {
     remarkMessage1: '后端控制路由权限',
     remarkMessage2: '前端控制路由权限',
     // 部门列表
-    departmentList: '部门列表',
-    searchDepartment: '搜索部门',
+    deptList: '部门列表',
+    searchDept: '搜索部门',
     account: '账号',
     email: '邮箱',
     createTime: '创建时间',
     // 所属部门
-    department: '所属部门',
-    departmentName: '部门名称',
+    dept: '所属部门',
+    deptName: '部门名称',
     status: '状态',
     // 启用
     enable: '启用',
     // 禁用
     disable: '禁用',
     // 上级部门
-    superiorDepartment: '上级部门'
+    superiorDept: '上级部门'
   },
   menu: {
     menuName: '菜单名称',
