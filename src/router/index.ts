@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import type {  RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 import type { App } from 'vue'
 import NProgress from '@/hooks/web/useProgress'
 import { NO_RESET_WHITE_LIST } from '@/constants'
@@ -19,12 +19,9 @@ export const resetRouter = (): void => {
  * 如何匹配所有文件请看：https://github.com/mrmlnc/fast-glob#basic-syntax
  * 如何排除文件请看：https://cn.vitejs.dev/guide/features.html#negative-patterns
  */
-const modules: Record<string, any> = import.meta.glob(
-  ["./modules/*.ts"],
-  {
-    eager: true
-  }
-)
+const modules: Record<string, any> = import.meta.glob(['./modules/*.ts'], {
+  eager: true
+})
 
 Object.keys(modules).forEach((key) => {
   constantRouterMap.push(...modules[key].default)

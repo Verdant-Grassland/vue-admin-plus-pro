@@ -1,5 +1,5 @@
-import { Dept } from "../dept/types"
-import { Role } from "../role/types"
+import { Dept } from '../dept/types'
+import { Role } from '../role/types'
 
 export interface AdminLoginType {
   adminName: string

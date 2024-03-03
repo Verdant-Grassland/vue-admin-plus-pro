@@ -1,10 +1,9 @@
 @use 'sass:map';
-
 @use './vars' as *;
 
 @mixin with-bg {
-  background-color: var(--bg-color);
   color: var(--text-color);
+  background-color: var(--bg-color);
   transition:
     border-color var(--el-transition-duration),
     background-color var(--el-transition-duration-fast);

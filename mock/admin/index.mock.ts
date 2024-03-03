@@ -142,9 +142,7 @@ export default [
     method: "get",
     response: () => {
       if (admins) {
-        const responseData = R.ok("查询所有管理员数据成功111").setData("adminList", "123");
-        console.log('responseData---', responseData);
-        return responseData;
+        return R.ok("查询所有管理员数据成功").setData("adminList", admins);
       } else {
         return R.error("查询所有管理员数据失败")
       }
@@ -172,14 +170,14 @@ export default [
       const startIndex = (page - 1) * pageSize;
       const endIndex = page * pageSize;
       const adminList = admin.slice(startIndex, endIndex);
-      const map: Map<string, any> = new Map()
-      map.set("total", total)
-      map.set("pageSize", pageSize)
-      map.set("pages", pages)
-      map.set("page", page)
-      map.set("rows", adminList)
-      const obj = Object.fromEntries(map)
-      return R.ok("查询所有管理员分页数据成功").setData(obj);
+      const record: Record<string, any> = {
+        total: total,
+        pageSize: pageSize,
+        pages: pages,
+        page: page,
+        rows: adminList
+      }
+      return R.ok("查询所有管理员分页数据成功").setData(record);
     }
   },
   {

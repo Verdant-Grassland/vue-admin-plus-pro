@@ -4,9 +4,9 @@ const { t } = useI18n()
 
 export default [
   {
-    path: "/login",
-    name: "Login",
-    component: () => import("@/views/login/Login.vue"),
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/login/Login.vue'),
     meta: {
       hidden: true,
       title: t('login.login'),

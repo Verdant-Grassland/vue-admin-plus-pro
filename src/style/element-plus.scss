@@ -28,8 +28,8 @@
 /* nprogress 适配 element-plus 的主题色 */
 #nprogress {
   & .bar {
-    background-color: var(--el-color-primary) !important;
     height: 2px !important;
+    background-color: var(--el-color-primary) !important;
   }
 
   & .peg {
