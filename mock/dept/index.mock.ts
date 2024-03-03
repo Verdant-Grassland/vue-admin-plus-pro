@@ -94,6 +94,8 @@ const dept: {
   }
 ]
 
+export { dept }
+
 export default [
   {
     url: '/dept/getAllDept',

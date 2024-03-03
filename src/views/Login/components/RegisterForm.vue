@@ -11,7 +11,8 @@
   const userStore = useAdminStore()
   import { adminLoginApi } from '@/api/admin'
   import { Admin } from '@/api/admin/types'
-  const registerFormData = reactive<Admin>({
+  const registerFormData = ref<Admin>({
+    adminId: 0,
     adminName: '',
     adminRename: '',
     adminSex: 1,
@@ -24,7 +25,16 @@
     adminReview: '',
     adminStatus: 0,
     createTime: '',
-    updateTime: ''
+    updateTime: '',
+    adminAvatar: '',
+    adminBio: '',
+    starStatusTime: null,
+    endStatusTime: null,
+    adminRemark: null,
+    adminIsdelete: 0,
+    roleList: [],
+    menuPerms: undefined,
+    deptList: []
   })
   const registerSchema = reactive({
     type: 'object',

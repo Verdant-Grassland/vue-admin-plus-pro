@@ -48,6 +48,8 @@ const role: {
   }
 ]
 
+export { role }
+
 export default [
   {
     url: '/role/getAllRole',

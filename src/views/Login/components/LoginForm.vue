@@ -96,7 +96,8 @@
       ElMessage.success(res.message)
       userStore.setAdminInfo(res.data.adminList)
       userStore.setRememberMe(remember.value)
-
+      userStore.setToken(res.data.token)
+      userStore.setTokenKey(res.data.token)
       if (res) {
         // 是否记住我
         if (unref(remember)) {

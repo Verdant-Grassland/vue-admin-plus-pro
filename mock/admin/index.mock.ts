@@ -3,8 +3,8 @@ import Mock from 'mockjs'
 import { Md5 } from 'ts-md5'
 import { AdminReview, AccountStatus } from './status'
 import { utils } from './utils'
-import { Role } from '@/api/role/types'
-import { Dept } from '@/api/dept/types'
+import { dept } from '../dept/index.mock'
+import { role } from '../role/index.mock'
 const timeout = 1000
 
 const admin: {
@@ -28,9 +28,9 @@ const admin: {
   updateTime: string
   adminRemark: string | null
   adminIsdelete: number
-  roleList: Role[]
+  roleId: number
   menuPerms: any
-  deptList: Dept[]
+  deptId: number
 }[] = [
   {
     adminId: 1,
@@ -53,31 +53,22 @@ const admin: {
     starStatusTime: null,
     endStatusTime: null,
     adminRemark: null,
-    roleList: [{
-      roleId: 1,
-      roleName: "超级管理员",
-      roleStatus: Mock.Random.integer(0, 1),
-      roleDescription: "超级管理员无限所有的菜单",
-      createTime: "@datetime",
-      updateTime: "@datetime",
-      roleIsdelete: Mock.Random.integer(0, 1)
-    }],
+    roleId: 1,
     menuPerms: undefined,
-    deptList: [{
-      deptId: 1,
-      parentId: 0,
-      deptName: "北京市某某科技有限公司",
-      orderNum: 0,
-      deptLeader: "张田某",
-      deptPhone: "13888888888",
-      deptEmail: "admin2023@163.com",
-      deptStatus: Mock.Random.integer(0, 1),
-      createTime: "@datetime",
-      updateTime: "@datetime",
-      deptIsdelete: Mock.Random.integer(0, 1)
-    }]
+    deptId: 1
   }
 ]
+
+const admins = admin.map(admin => {
+  const { roleId, deptId, ...admins } = admin;
+  const roles = role.find(role => role.roleId == admin.roleId)
+  const depts = dept.find(dept => dept.deptId == admin.deptId)
+  return {
+    ...admins,
+    deptList: [depts],
+    roleList: [roles]
+  }
+})
 
 export default [
   {
@@ -86,7 +77,7 @@ export default [
     response: (req: any) => {
       const { account, password } = req.body
       // 根据用户名、手机号或邮箱进行登录验证
-      const matchedAdmin = admin.find((a) => a.adminName == account || a.adminPhone == account || a.adminEmail == account);
+      const matchedAdmin = admins.find((a) => a.adminName == account || a.adminPhone == account || a.adminEmail == account)
       let token
       if (matchedAdmin && matchedAdmin.password == Md5.hashStr(password + matchedAdmin.adminSalt)) {
         if (matchedAdmin.adminId == 1) {
@@ -150,11 +141,45 @@ export default [
     url: "/admin/getAllAdmin",
     method: "get",
     response: () => {
-      if (admin) {
-        return R.ok("查询所有管理员数据成功").setData("adminList", admin)
+      if (admins) {
+        const responseData = R.ok("查询所有管理员数据成功111").setData("adminList", "123");
+        console.log('responseData---', responseData);
+        return responseData;
       } else {
         return R.error("查询所有管理员数据失败")
       }
+    }
+  },
+  {
+    url: "/admin/getAdminPage/:page/:pageSize",
+    method: "get",
+    response: (req: any) => {
+      const { page, pageSize, keyword } = req.query;
+      let admin = admins;
+      
+      // 模糊查询
+      if (keyword) {
+        admin = admin.filter((admin) =>
+          admin.adminName.includes(keyword) ||
+          admin.adminPhone.includes(keyword) ||
+          admin.adminEmail.includes(keyword)
+        );
+      }
+
+      // 分页
+      const total = admin.length
+      const pages = Math.ceil(total / pageSize)
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = page * pageSize;
+      const adminList = admin.slice(startIndex, endIndex);
+      const map: Map<string, any> = new Map()
+      map.set("total", total)
+      map.set("pageSize", pageSize)
+      map.set("pages", pages)
+      map.set("page", page)
+      map.set("rows", adminList)
+      const obj = Object.fromEntries(map)
+      return R.ok("查询所有管理员分页数据成功").setData(obj);
     }
   },
   {

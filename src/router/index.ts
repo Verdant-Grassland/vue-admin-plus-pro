@@ -7,7 +7,7 @@ import { NO_RESET_WHITE_LIST } from '@/constants'
 export const constantRouterMap: AppRouteRecordRaw[] = []
 
 export const resetRouter = (): void => {
-  router.getRoutes().forEach((route) => {
+  router.getRoutes().forEach((route: { name: any }) => {
     const { name } = route
     if (name && !NO_RESET_WHITE_LIST.includes(name as string)) {
       router.hasRoute(name) && router.removeRoute(name)
